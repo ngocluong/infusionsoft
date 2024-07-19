@@ -6,15 +6,16 @@ module Infusionsoft
     private
 
     def connection(service_call, *args)
-      path = use_oauth ? "/crm/xmlrpc/v1?access_token=#{api_key}" : "/api/xmlrpc"
-      
+      path = use_oauth ? "/crm/xmlrpc/v1?access_token=#{api_key}" : "/crm/xmlrpc"
+
       client = XMLRPC::Client.new3({
-        'host' => api_url,
-        'path' => path,
-        'port' => 443,
-        'use_ssl' => true
-      })
-      client.http_header_extra = {'User-Agent' => user_agent}
+                                     'host' => api_url,
+                                     'path' => path,
+                                     'port' => 443,
+                                     'use_ssl' => true
+                                   })
+      client.http_header_extra = {'User-Agent' => user_agent, 'X-Keap-API-Key' => api_key}
+
       begin
         api_logger.info "CALL: #{service_call} api_url: #{api_url} at:#{Time.now} args:#{args.inspect}"
         result = client.call("#{service_call}", api_key, *args)
